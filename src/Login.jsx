@@ -20,6 +20,10 @@ export default function Login() {
       const data = await res.json();
       if (data.token) {
         localStorage.setItem("token", data.token);
+        // Decodificar JWT para extraer RoleID
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+        localStorage.setItem("roleId", payload.RoleID);
+        localStorage.setItem("user", JSON.stringify(payload));
         navigate("/");
       } else {
         setError("Login incorrecto");
