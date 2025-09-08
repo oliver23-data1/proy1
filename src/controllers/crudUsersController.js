@@ -1,0 +1,70 @@
+class CrudUsersController {
+    constructor(database) {
+        this.database = database;
+    }
+
+    async create(req, res) {
+        try {
+            const { Username, Email, PasswordHash, IsActive } = req.body;
+            const query = "INSERT INTO Users (Username, Email, PasswordHash, IsActive) OUTPUT INSERTED.UserID VALUES (@Username, @Email, @PasswordHash, @IsActive)";
+            const request = this.database.request();
+            request.input('Username', Username);
+            request.input('Email', Email);
+            request.input('PasswordHash', PasswordHash);
+            request.input('IsActive', IsActive ?? 1);
+            const result = await request.query(query);
+            res.status(201).json({ UserID: result.recordset[0]?.UserID, Username, Email, IsActive });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    async read(req, res) {
+        try {
+            const query = "SELECT * FROM Users";
+            const result = await this.database.request().query(query);
+            res.status(200).json(result.recordset);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    async update(req, res) {
+        try {
+            const { UserID } = req.params;
+            const { Username, Email, PasswordHash, IsActive } = req.body;
+            const query = "UPDATE Users SET Username = @Username, Email = @Email, PasswordHash = @PasswordHash, IsActive = @IsActive WHERE UserID = @UserID";
+            const request = this.database.request();
+            request.input('UserID', UserID);
+            request.input('Username', Username);
+            request.input('Email', Email);
+            request.input('PasswordHash', PasswordHash);
+            request.input('IsActive', IsActive);
+            const result = await request.query(query);
+            if (result.rowsAffected[0] === 0) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            res.status(200).json({ UserID, Username, Email, IsActive });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    async delete(req, res) {
+        try {
+            const { UserID } = req.params;
+            const query = "DELETE FROM Users WHERE UserID = @UserID";
+            const request = this.database.request();
+            request.input('UserID', UserID);
+            const result = await request.query(query);
+            if (result.rowsAffected[0] === 0) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            res.status(204).send();
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+}
+
+module.exports = CrudUsersController;
