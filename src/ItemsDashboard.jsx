@@ -7,7 +7,12 @@ export default function ItemsDashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/items")
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:3000/api/items", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Error al obtener items");
         return res.json();

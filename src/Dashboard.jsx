@@ -7,7 +7,12 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/users")
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:3000/api/users", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Error al obtener usuarios");
         return res.json();

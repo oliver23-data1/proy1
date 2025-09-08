@@ -3,7 +3,7 @@ import React from "react";
 export default function Sidebar({ onNavigate }) {
   const roleId = Number(localStorage.getItem("roleId"));
   // Debug visual para depuración
-  console.log("Sidebar roleId:", roleId);
+  //console.log("Sidebar roleId:", roleId);
   return (
     <aside className="h-screen w-64 bg-white border-r flex flex-col shadow-lg fixed left-0 top-0 z-10">
       <div className="p-6 text-2xl font-bold text-gray-800 border-b">Panel</div>
