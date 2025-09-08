@@ -33,6 +33,8 @@ INSERT INTO Users (Username, Email, PasswordHash, RoleID)
 VALUES ('cliente01', 'cliente@ejemplo.com', 'hash_aqui', 2);
 
 
+INSERT INTO Users (Username, Email, PasswordHash, RoleID)
+VALUES ('cliente02', 'cliente@ejemplo.com', '123', 2);
 
 
 

@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 class CrudUsersController {
     constructor(database) {
         this.database = database;
@@ -5,7 +7,8 @@ class CrudUsersController {
 
     async create(req, res) {
         try {
-            const { Username, Email, PasswordHash, IsActive, RoleID } = req.body;
+            const { Username, Email, Password, IsActive, RoleID } = req.body;
+            const PasswordHash = await bcrypt.hash(Password, 10);
             const query = "INSERT INTO Users (Username, Email, PasswordHash, IsActive, RoleID) OUTPUT INSERTED.UserID VALUES (@Username, @Email, @PasswordHash, @IsActive, @RoleID)";
             const request = this.database.request();
             request.input('Username', Username);
@@ -33,13 +36,19 @@ class CrudUsersController {
     async update(req, res) {
         try {
             const { UserID } = req.params;
-            const { Username, Email, PasswordHash, IsActive, RoleID } = req.body;
-            const query = "UPDATE Users SET Username = @Username, Email = @Email, PasswordHash = @PasswordHash, IsActive = @IsActive, RoleID = @RoleID WHERE UserID = @UserID";
+            const { Username, Email, Password, IsActive, RoleID } = req.body;
+            let PasswordHash;
+            if (Password) {
+                PasswordHash = await bcrypt.hash(Password, 10);
+            }
+            const query = "UPDATE Users SET Username = @Username, Email = @Email, " +
+                (Password ? "PasswordHash = @PasswordHash, " : "") +
+                "IsActive = @IsActive, RoleID = @RoleID WHERE UserID = @UserID";
             const request = this.database.request();
             request.input('UserID', UserID);
             request.input('Username', Username);
             request.input('Email', Email);
-            request.input('PasswordHash', PasswordHash);
+            if (Password) request.input('PasswordHash', PasswordHash);
             request.input('IsActive', IsActive);
             request.input('RoleID', RoleID);
             const result = await request.query(query);
