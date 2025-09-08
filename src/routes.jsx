@@ -2,12 +2,23 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import ItemsDashboard from "./ItemsDashboard";
+import Login from "./Login";
+
+function RequireAuth({ children }) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "/login";
+    return null;
+  }
+  return children;
+}
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/items" element={<ItemsDashboard />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<RequireAuth><Dashboard /></RequireAuth>} />
+      <Route path="/items" element={<RequireAuth><ItemsDashboard /></RequireAuth>} />
     </Routes>
   );
 }
