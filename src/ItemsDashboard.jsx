@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { ItemsDataTableEnhanced } from "./components/ItemsDataTableEnhanced";
 import { CreateItemForm } from "./components/CreateItemForm";
-import { EditItemForm } from "./components/EditItemForm"; // Importar EditItemForm
+import { EditItemForm } from "./components/EditItemForm";
+import UploadExcelForm from "./components/UploadExcelForm";
 
 export default function ItemsDashboard() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false); // Estado para el formulario de edición
-  const [editingItem, setEditingItem] = useState(null); // Estado para el ítem que se está editando
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [showUploadForm, setShowUploadForm] = useState(false);
 
   const fetchItems = useCallback(async () => {
     setLoading(true);
@@ -78,16 +80,27 @@ export default function ItemsDashboard() {
     }
   };
 
+  const roleId = Number(localStorage.getItem("roleId"));
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-white to-gray-200">
       <div className="w-full max-w-3xl mx-auto p-8 rounded-xl shadow-lg bg-white border border-gray-200">
         <h1 className="text-3xl font-extrabold text-center mb-8 text-gray-800 tracking-tight">Dashboard de Items</h1>
-        <button
-          onClick={() => setShowCreateForm(true)}
-          className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          Crear Nuevo Ítem
-        </button>
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Crear Nuevo Ítem
+          </button>
+          {roleId === 1 && (
+            <button
+              onClick={() => setShowUploadForm(true)}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Cargar Excel
+            </button>
+          )}
+        </div>
         {loading && <p className="text-center text-gray-500">Cargando...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
         {!loading && !error && (
@@ -108,6 +121,12 @@ export default function ItemsDashboard() {
             item={editingItem}
             onClose={() => setShowEditForm(false)}
             onUpdated={handleItemUpdated}
+          />
+        )}
+        {showUploadForm && (
+          <UploadExcelForm
+            onClose={() => setShowUploadForm(false)}
+            onUploaded={fetchItems}
           />
         )}
       </div>
