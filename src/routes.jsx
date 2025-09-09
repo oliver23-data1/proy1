@@ -25,7 +25,6 @@ function RequireAdmin({ children }) {
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
       <Route path="/" element={<RequireAuth><RequireAdmin><Dashboard /></RequireAdmin></RequireAuth>} />
       <Route path="/items" element={<RequireAuth><ItemsDashboard /></RequireAuth>} />
     </Routes>

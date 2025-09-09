@@ -8,7 +8,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 
-export function ItemsDataTableEnhanced({ data }) {
+export function ItemsDataTableEnhanced({ data, onEditItem, onDeleteItem }) {
   const [filter, setFilter] = React.useState("");
   const [sorting, setSorting] = React.useState([]);
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -20,8 +20,28 @@ export function ItemsDataTableEnhanced({ data }) {
       { accessorKey: "name", header: "Nombre" },
       { accessorKey: "description", header: "Descripción" },
       { accessorKey: "created_at", header: "Creado" },
+      {
+        id: "actions",
+        header: "Acciones",
+        cell: ({ row }) => (
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => onEditItem(row.original)}
+              className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded text-xs"
+            >
+              Editar
+            </button>
+            <button
+              onClick={() => onDeleteItem(row.original.id)}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs"
+            >
+              Eliminar
+            </button>
+          </div>
+        ),
+      },
     ],
-    []
+    [onEditItem, onDeleteItem]
   );
 
   const table = useReactTable({

@@ -4,12 +4,14 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import AppRoutes from "./routes";
-import Login from "./Login";
+import Login from "./Login"; // Mantener la importación de Login aquí
 
 function AppLayout() {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("roleId"); // También eliminar roleId al cerrar sesión
+    localStorage.removeItem("user"); // También eliminar user al cerrar sesión
     navigate("/login");
   };
   return (
