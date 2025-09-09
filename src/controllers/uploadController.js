@@ -19,7 +19,7 @@ const uploadExcel = async (req, res) => {
         console.log('Fila con campos faltantes:', row);
       }
     }
-    console.log('Registros leídos:', data);
+    //console.log('Registros leídos:', data);
 
     if (!data || data.length === 0) {
       fs.unlinkSync(req.file.path);
