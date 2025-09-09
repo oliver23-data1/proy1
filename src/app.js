@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { setRoutes: setCrudItemsRoutes } = require('./routes/crudItemsRoutes');
 const { setRoutes: setCrudUsersRoutes } = require('./routes/crudUsersRoutes');
-const uploadRoute = require('./routes/upload');
+const { setRoutes: setUploadRoutes } = require('./routes/upload');
 const authorize = require('./middleware/authorize');
 const jwtAuth = require('./middleware/jwtAuth');
 const loginRoute = require('./routes/login');
@@ -15,7 +15,6 @@ app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(uploadRoute);
 
 // Ruta de login pública
 app.use('/api/login', loginRoute);
@@ -23,6 +22,10 @@ app.use('/api/login', loginRoute);
 // Rutas protegidas para usuarios (solo admin)
 app.use('/api/users', jwtAuth, authorize(1));
 setCrudUsersRoutes(app);
+
+// Rutas protegidas para subida de Excel (solo admin)
+app.use('/api/upload', jwtAuth, authorize(1));
+setUploadRoutes(app);
 
 // Rutas de items accesibles para usuarios autenticados (admin y cliente)
 app.use('/api/items', jwtAuth);

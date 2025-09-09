@@ -11,7 +11,7 @@ const uploadExcel = async (req, res) => {
     const data = XLSX.utils.sheet_to_json(worksheet, {
       defval: ''
     });
-    console.log('Registros leídos:', data);
+    //console.log('Registros leídos:', data);
 
     // Validar que los campos requeridos existan
     for (const row of data) {
