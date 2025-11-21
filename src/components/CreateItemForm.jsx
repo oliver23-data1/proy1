@@ -30,7 +30,7 @@ export function CreateItemForm({ onClose, onCreated }) {
 
       const newItem = await response.json();
       onCreated(newItem); // Notificar al padre que se creó un nuevo ítem
-      onClose(); // Cerrar el formulario
+      onClose(); // Cerrar el formulario (zzz)
     } catch (err) {
       setError(err.message);
     } finally {
